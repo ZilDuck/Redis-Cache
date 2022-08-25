@@ -1,7 +1,7 @@
 env:
-  REDIS_URL: redis://cache
-  NODE_ENV: development
-  PORT: 3000
+  redis_url: redis://cache
+  node_env: development
+  port: 3000
 
 namespace: zilkroad-testnet
 

@@ -25,12 +25,12 @@ spec:
           ports:
           - containerPort: {{ .Values.port }}
           env:
-            - name: REDIS_URL
-              value: {{ .Values.env.REDIS_URL | quote }}
-            - name: NODE_ENV
-              value: {{ .Values.env.NODE_ENV | quote }}
-            - name: PORT
-              value: {{ .Values.env.PORT | quote }}
+            - name: redis_url
+              value: {{ .Values.env.redis_url | quote }}
+            - name: node_env
+              value: {{ .Values.env.node_env | quote }}
+            - name: port
+              value: {{ .Values.env.port | quote }}
           resources:
             limits:
               cpu: {{ .Values.resources.limits.cpu | quote }}
