@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: public-api
+  labels:
+    service: public-api
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      service: public-api
+  template:
+    metadata:
+      labels:
+        service: public-api
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.image.app.pullSecret }}
+      containers:
+        - name: public-api
+          image: "{{ .Values.image.app.url }}:{{ .Values.image.app.tag }}"
+          imagePullPolicy: {{ .Values.image.app.pullPolicy }}
+          ports:
+          - containerPort: {{ .Values.port }}
+          env:
+            - name: PUBLIC_API_PORT
+              value: {{ .Values.port | quote }}
+            - name: is_testnet
+              value: {{ .Values.env.isTestnet | quote }}
+            - name: discord_token
+              value: {{ .Values.env.discord.discordToken | quote }}
+            - name: PGHOST
+              value: {{ .Values.env.pg.host | quote }}
+            - name: PGDATABASE
+              value: {{ .Values.env.pg.database | quote }}
+            - name: PGPORT
+              value: {{ .Values.env.pg.port | quote }}
+            - name: PGUSER
+              value: {{ .Values.env.pg.user | quote }}
+            - name: PGPASSWORD
+              value: {{ .Values.env.pg.password | quote }}
+            - name: current_network
+              value: {{ .Values.env.currentNetwork | quote }}
+            - name: DISABLE_CACHE
+              value: {{ .Values.env.disableCache | quote }}
+            - name: WZIL_CONTRACT
+              value: {{ .Values.env.tokens.wzil | quote }}
+            - name: GZIL_CONTRACT
+              value: {{ .Values.env.tokens.gzil | quote }}
+            - name: XSGD_CONTRACT
+              value: {{ .Values.env.tokens.xsgd | quote }}
+            - name: ZWBTC_CONTRACT
+              value: {{ .Values.env.tokens.zwbtc | quote }}
+            - name: ZETH_CONTRACT
+              value: {{ .Values.env.tokens.zeth | quote }}
+            - name: ZUSDT_CONTRACT
+              value: {{ .Values.env.tokens.zusdt | quote }}
+            - name: DUCK_CONTRACT
+              value: {{ .Values.env.tokens.duck | quote }}
+          resources:
+            limits:
+              cpu: {{ .Values.resources.limits.cpu | quote }}
+              memory: {{ .Values.resources.limits.memory | quote }}
+            requests:
+              cpu: {{ .Values.resources.requests.cpu | quote }}
+              memory: {{ .Values.resources.requests.memory | quote }}
