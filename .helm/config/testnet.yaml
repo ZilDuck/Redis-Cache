@@ -1,0 +1,12 @@
+env:
+  redis_url: redis://cache
+  node_env: development
+  port: 3000
+
+namespace: zilkroad-testnet
+
+image:
+  app:
+    pullSecret: aws-registry
+
+replicas: 1

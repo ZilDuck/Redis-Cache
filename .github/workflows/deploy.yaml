@@ -1,0 +1,35 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        required:    true
+        description: Which environment to deploy?
+        type:        choice
+        options:
+          - testnet
+          - mainnet
+      tag:
+        required:    true
+        description: ECR tag
+        default:     Not latest
+env:
+  APP: zilkroad
+  SERVICE: redis-cache
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+        with:
+          ref: refs/tags/${{ github.event.inputs.tag }}
+
+      - name: Deploy to Kubernetes
+        uses: WyriHaximus/github-action-helm3@v2
+        with:
+          exec: helm upgrade --install ${{ env.SERVICE }} .helm -f .helm/config/${{ github.event.inputs.environment }}.yaml --namespace ${{ env.APP }}-${{ github.event.inputs.environment }} --atomic --set=image.app.tag=${{ github.event.inputs.tag }}
+          kubeconfig: '${{ secrets.KUBECONFIG }}'

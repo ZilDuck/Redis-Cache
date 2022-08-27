@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-cache
+  labels:
+    service: redis-cache
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      service: redis-cache
+  template:
+    metadata:
+      labels:
+        service: redis-cache
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.image.app.pullSecret }}
+      containers:
+        - name: redis-cache
+          image: "{{ .Values.image.app.url }}:{{ .Values.image.app.tag }}"
+          imagePullPolicy: {{ .Values.image.app.pullPolicy }}
+          ports:
+          - containerPort: {{ .Values.port }}
+          env:
+            - name: redis_url
+              value: {{ .Values.env.redis_url | quote }}
+            - name: node_env
+              value: {{ .Values.env.node_env | quote }}
+            - name: port
+              value: {{ .Values.env.port | quote }}
+          resources:
+            limits:
+              cpu: {{ .Values.resources.limits.cpu | quote }}
+              memory: {{ .Values.resources.limits.memory | quote }}
+            requests:
+              cpu: {{ .Values.resources.requests.cpu | quote }}
+              memory: {{ .Values.resources.requests.memory | quote }}
