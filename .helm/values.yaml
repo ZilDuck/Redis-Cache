@@ -11,9 +11,6 @@ namespace: devnet
 
 logPath: /app/logs
 
-replicas:
-  publicApi: 1
-
 env:
   redis_url: redis://cache
   node_env: development
